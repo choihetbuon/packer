@@ -1,0 +1,30 @@
+{
+  "_comment": "packer building image vagrant",
+  "builders": [
+    {
+      "communicator": "ssh",
+      "source_path": "centos/7",
+      "provider": "virtualbox",
+      "add_force": true,
+      "name": "centos7",
+      "type": "vagrant" 
+    }
+  ],
+  "provisioners": [
+    {
+        "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E bash '{{.Path}}'",
+        "script": "scripts/setup.sh",
+        "type": "shell"
+    },
+    {
+        "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E bash '{{.Path}}'",
+        "script": "scripts/virtualbox.sh",
+        "type": "shell"
+    }
+  ],
+  "post-processors": [{
+        "type": "vagrant",
+        "output": "./centos-7.9-x64-{{.Provider}}-minimal.box",
+        "vagrantfile_template": "./Vagrantfile"
+    }]
+}
