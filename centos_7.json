@@ -4,18 +4,22 @@
     {
         "communicator": "ssh",
         "type": "virtualbox-iso",
+        "boot_wait": "5s",
         "ssh_username": "vagrant",
         "ssh_password": "vagrant",
         "vm_name": "packer-centos-7-x86_64",
+        "ssh_port": 22,
         "iso_url": "CentOS-7-x86_64-Minimal-2009.iso",
+        "http_port_min": 10082,
+        "http_port_max": 10089,
         "iso_checksum": "07b94e6b1a0b0260b94c83d6bb76b26bf7a310dc78d7a9c7432809fb9bc6194a",
         "ssh_timeout": "600s",
         "guest_os_type": "RedHat_64",
         "shutdown_command": "echo '/sbin/halt -h -p' > /tmp/shutdown.sh; echo 'vagrant'|sudo -S sh '/tmp/shutdown.sh'",
-        "http_directory": "./",
+        "http_directory": "http",
         "boot_command":  [
             "<esc> <wait>",
-            "linux ks=http://{{.HTTPIP}}:{{.HTTPPort}}/ks.cfg",
+            "text ks=http://{{.HTTPIP}}:{{.HTTPPort}}/ks.cfg",
             "<enter><wait>"
         ],
         "VBoxManage": [
@@ -30,7 +34,12 @@
   "provisioners": [
     {
         "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E bash '{{.Path}}'",
-        "script": "scripts/setup.sh",
+        "script": "scripts/change_repo.sh",
+        "type": "shell"
+    },
+    {
+        "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E bash '{{.Path}}'",
+        "script": "scripts/devtools.sh",
         "type": "shell"
     },
     {
