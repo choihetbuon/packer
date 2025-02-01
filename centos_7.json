@@ -26,7 +26,7 @@
         "boot_wait": "5s",
         "boot_command":  [
             "<esc> <wait>",
-            "linux ks=http//{{.HTTPIP}}:{{.HTTPPort}}/7ks.cfg",
+            "linux ks=http//{{.HTTPIP}}:{{.HTTPPort}}/ks.cfg",
             "<enter><wait>"
         ],
 
@@ -35,7 +35,7 @@
         "ssh_password": "{{user `ssh_password`}}",
         "ssh_wait_timeout": "{{user `timeout`}}",
         "ssh_handshake_attempts": "100",
-        "ssh_port": 2222,
+        "ssh_port": 22,
         "ssh_timeout": "30m",
 
         "vboxmanage": [
@@ -47,23 +47,19 @@
         ]
     }],
 
-    "provisioners": [{
-        "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E bash '{{.Path}}'",
-        "type": "shell",
-        "script": "scripts/virtualbox.sh",
-        "expect_disconnect": true,
-        "pause_before": "30s",
-        "timeout": "15m"
-    },
-    {
-        "type": "ansible",
-        "playbook_file": "ansible/main.yml",
-        "sftp_command": "/usr/libexec/openssh/sftp-server -e",
-        "user": "{{user `ssh_username`}}",
-        "ansible_env_vars": [
-            "ANSIBLE_FORCE_COLOR=1"
-        ]
-    }],
+    "provisioners": [
+        {
+            "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E bash '{{.Path}}'",
+            "type": "shell",
+            "scripts": [
+                "scripts/change_repo.sh",
+                "scripts/devtools.sh"
+            ],
+            "expect_disconnect": true,
+            "pause_before": "30s",
+            "timeout": "15m"
+        }
+    ],
     "post-processors": [{
         "type": "vagrant",
         "output": "./centos-7.9-x64-{{.type}}-minimal.box",
