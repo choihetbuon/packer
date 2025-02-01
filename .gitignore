@@ -1,4 +1,4 @@
-!output*
+output*
 # Cache objects
 packer_cache/
 

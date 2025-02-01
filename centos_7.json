@@ -1,4 +1,15 @@
 {
+    "variables": {
+        "build_number": "{{timestamp}}",
+        "centos_arch": "x86_64",
+        "iso_base_url": "http://ftp.heanet.ie/pub/centos",
+        "iso_checksum_type": "sha256",
+        "username": "root",
+        "password": "password",
+        "disk_size": "10000",
+        "timeout": "30m",
+        "headless": "true"
+  },
   "_comment": "virtualbox-iso",
   "builders": [
     {
@@ -10,8 +21,8 @@
         "vm_name": "packer-centos-7-x86_64",
         "ssh_port": 22,
         "iso_url": "CentOS-7-x86_64-Minimal-2009.iso",
-        "http_port_min": 10082,
-        "http_port_max": 10089,
+        "http_port_min": 8336,
+        "http_port_max": 8336,
         "iso_checksum": "07b94e6b1a0b0260b94c83d6bb76b26bf7a310dc78d7a9c7432809fb9bc6194a",
         "ssh_timeout": "600s",
         "guest_os_type": "RedHat_64",
@@ -22,7 +33,7 @@
             "text ks=http://{{.HTTPIP}}:{{.HTTPPort}}/ks.cfg",
             "<enter><wait>"
         ],
-        "VBoxManage": [
+        "vboxmanage": [
             ["modifyvm", "{{.Name}}", "--nat-localhostreachable1", "on"],
             [ "modifyvm", "{{.Name}}", "--memory", "4096" ],
             [ "modifyvm", "{{.Name}}", "--cpus", "2" ],
@@ -31,27 +42,31 @@
         ]
     }
   ],
-  "provisioners": [
+    "provisioners": [
     {
-        "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E bash '{{.Path}}'",
-        "script": "scripts/change_repo.sh",
-        "type": "shell"
+        "type": "shell",
+        "expect_disconnect": true,
+            "script": "scripts/change_repo.sh",
+            "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E bash '{{.Path}}'",
+            "pause_before": "10s"
     },
     {
-        "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E bash '{{.Path}}'",
-        "script": "scripts/devtools.sh",
-        "type": "shell"
+            "type": "shell", 
+            "script": "scripts/devtools.sh",
+            "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E bash '{{.Path}}'",
+            "pause_before": "10s"
     },
     {
-        "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E bash '{{.Path}}'",
-        "script": "scripts/virtualbox.sh",
-        "type": "shell"
+            "type": "shell",
+            "script": "scripts/virtualbox.sh", 
+            "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E bash '{{.Path}}'",
+            "pause_before": "10s"
     }
-  ],
-  "post-processors": [{
-        "type": "vagrant",
-        "output": "./centos-7.9-x64-{{.type}}-minimal.box",
-        "vagrantfile_template": "./Vagrantfile"
+],
+    "post-processors": [{
+            "type": "vagrant",
+            "output": "./centos-7.9-x64-{{.type}}-minimal.box",
+            "vagrantfile_template": "./Vagrantfile"
     }]
 
 }
