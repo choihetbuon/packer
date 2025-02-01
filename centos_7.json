@@ -21,7 +21,6 @@
         "iso_checksum": "07b94e6b1a0b0260b94c83d6bb76b26bf7a310dc78d7a9c7432809fb9bc6194a",
         "http_port_min": 8336,
         "http_port_max": 8336,
-        "ssh_port": 22,
 
         "http_directory": "http",
         "boot_wait": "5s",
@@ -35,18 +34,26 @@
         "ssh_username": "{{user `ssh_username`}}",
         "ssh_password": "{{user `ssh_password`}}",
         "ssh_wait_timeout": "{{user `timeout`}}",
+        "ssh_handshake_attempts": "100",
+        "ssh_port": 2222,
+        "ssh_timeout": "30m",
 
         "vboxmanage": [
             ["modifyvm", "{{.Name}}", "--nat-localhostreachable1", "on"],
             ["modifyvm", "{{.Name}}", "--cpus", "2" ],
             ["modifyvm", "{{.Name}}", "--usb", "off"],
-            ["modifyvm", "{{.Name}}", "--audio", "none"]
+            ["modifyvm", "{{.Name}}", "--audio", "none"],
+            ["modifyvm", "{{.Name}}", "--memory", "4096"]
         ]
     }],
 
     "provisioners": [{
+        "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E bash '{{.Path}}'",
         "type": "shell",
-        "script": "scripts/virtualbox.sh"
+        "script": "scripts/virtualbox.sh",
+        "expect_disconnect": true,
+        "pause_before": "30s",
+        "timeout": "15m"
     },
     {
         "type": "ansible",
