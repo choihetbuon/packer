@@ -1,0 +1,29 @@
+---
+- name: set vagrant insecure authorized keys
+  authorized_key:
+    user: vagrant
+    key: "{{ lookup('file', 'files/vagrant.pub') }}"
+    state: present
+
+- name: update repository on Centos 7
+  script: ../scripts/change_repo.sh
+
+- name: install Development Tools
+  yum:
+    name: "@Development Tools"
+    state: present
+
+- name: install centos-release-scl
+  yum:
+    name: centos-release-scl
+    state: present
+
+- name: install devtoolset-9
+  yum:
+    name: devtoolset-9
+    state: present
+
+- name: enable devtoolset-9
+  shell: echo "source /opt/rh/devtoolset-9/enable" >> /etc/profile.d/devtoolset-9.sh
+  args:
+      creates: /etc/profile.d/devtoolset-9.sh

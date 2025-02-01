@@ -1,0 +1,8 @@
+---
+- hosts: all
+  name: Base linux configuration for packer images
+  become: true
+  tasks:
+    - include: base.yml
+  post_tasks:
+    - include: cleanup.yml

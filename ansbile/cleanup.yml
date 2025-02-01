@@ -1,0 +1,3 @@
+---
+- name: cleanup before generate image
+  script: ../scripts/cleanup.sh

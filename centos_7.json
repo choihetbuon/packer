@@ -1,72 +1,65 @@
 {
     "variables": {
-        "build_number": "{{timestamp}}",
-        "centos_arch": "x86_64",
-        "iso_base_url": "http://ftp.heanet.ie/pub/centos",
-        "iso_checksum_type": "sha256",
-        "username": "root",
-        "password": "password",
+        "ssh_username": "vagrant",
+        "ssh_password": "vagrant",
+        "iso_file": "CentOS-7-x86_64-Minimal-2009.iso",
+        "vm_basename": "centos-7.9x64",
         "disk_size": "10000",
         "timeout": "30m",
         "headless": "true"
-  },
-  "_comment": "virtualbox-iso",
-  "builders": [
-    {
+    },
+
+    "_comment": "virtualbox-iso",
+    "builders": [{
         "communicator": "ssh",
         "type": "virtualbox-iso",
-        "boot_wait": "5s",
-        "ssh_username": "vagrant",
-        "ssh_password": "vagrant",
-        "vm_name": "packer-centos-7-x86_64",
-        "ssh_port": 22,
-        "iso_url": "CentOS-7-x86_64-Minimal-2009.iso",
+        "vm_name": "{{user `vm_basename`}}",
+        "disk_size": "{{user `disk_size`}}",
+        "iso_urls": "{{user `iso_file`}}",
+        "guest_os_type": "RedHat_64",
         "http_port_min": 8336,
         "http_port_max": 8336,
-        "iso_checksum": "07b94e6b1a0b0260b94c83d6bb76b26bf7a310dc78d7a9c7432809fb9bc6194a",
-        "ssh_timeout": "600s",
-        "guest_os_type": "RedHat_64",
-        "shutdown_command": "echo '/sbin/halt -h -p' > /tmp/shutdown.sh; echo 'vagrant'|sudo -S sh '/tmp/shutdown.sh'",
+        "ssh_port": 22,
+
         "http_directory": "http",
+        "boot_wait": "5s",
         "boot_command":  [
             "<esc> <wait>",
-            "text ks=http://{{.HTTPIP}}:{{.HTTPPort}}/ks.cfg",
+            "text ks=http://{{.HTTPIP}}:{{.HTTPPort}}/7ks.cfg",
             "<enter><wait>"
         ],
+
+        "shutdown_command": "echo {{user `ssh_username`}} |sudo -S /sbin/halt -h -p",
+        "ssh_username": "{{user `ssh_username`}}",
+        "ssh_password": "{{user `ssh_password`}}",
+        "ssh_wait_timeout": "{{user `timeout`}}",
+
         "vboxmanage": [
             ["modifyvm", "{{.Name}}", "--nat-localhostreachable1", "on"],
-            [ "modifyvm", "{{.Name}}", "--memory", "4096" ],
-            [ "modifyvm", "{{.Name}}", "--cpus", "2" ],
+            ["modifyvm", "{{.Name}}", "--memory", "4096" ],
+            ["modifyvm", "{{.Name}}", "--cpus", "2" ],
             ["modifyvm", "{{.Name}}", "--usb", "off"],
             ["modifyvm", "{{.Name}}", "--audio", "none"]
         ]
-    }
-  ],
-    "provisioners": [
-    {
-        "type": "shell",
-        "expect_disconnect": true,
-            "script": "scripts/change_repo.sh",
-            "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E bash '{{.Path}}'",
-            "pause_before": "10s"
-    },
-    {
-            "type": "shell", 
-            "script": "scripts/devtools.sh",
-            "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E bash '{{.Path}}'",
-            "pause_before": "10s"
-    },
-    {
-            "type": "shell",
-            "script": "scripts/virtualbox.sh", 
-            "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E bash '{{.Path}}'",
-            "pause_before": "10s"
-    }
-],
-    "post-processors": [{
-            "type": "vagrant",
-            "output": "./centos-7.9-x64-{{.type}}-minimal.box",
-            "vagrantfile_template": "./Vagrantfile"
-    }]
+    }],
 
+    "provisioners": [{
+        "type": "shell",
+        "script": "scripts/virtualbox.sh"
+    },
+    {
+        "type": "ansible",
+        "playbook_file": "ansible/main.yml",
+        "sftp_command": "/usr/libexec/openssh/sftp-server -e",
+        "user": "{{user `ssh_username`}}",
+        "ansible_env_vars": [
+            "ANSIBLE_FORCE_COLOR=1"
+        ]
+    }],
+    "post-processors": [{
+        "type": "vagrant",
+        "output": "./centos-7.9-x64-{{.type}}-minimal.box",
+        "compression_level": 9,
+        "keep_input_artifact": false
+    }]
 }
