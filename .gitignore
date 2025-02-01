@@ -15,5 +15,5 @@ crash.log
 
 # For built boxes
 *.box
-*.iso
-ansbile/file
+*iso
+ansible/file/*

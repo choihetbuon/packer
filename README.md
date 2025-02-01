@@ -19,8 +19,9 @@ cd packer
 2. Build the Vagrant box with Packer:
 ```bash
 wget -O https://mirrors.cloud.tencent.com/centos/7.9.2009/isos/x86_64/CentOS-7-x86_64-Minimal-2009.iso
+cp ~/.ssh/vargrant.pub ansible/file
 packer init .
-packer build centos_7.json
+PACKER_LOG=1 packer build centos_7.json
 ``` 
 
 3. Add the box to Vagrant:

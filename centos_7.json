@@ -4,6 +4,7 @@
         "ssh_password": "vagrant",
         "iso_file": "CentOS-7-x86_64-Minimal-2009.iso",
         "vm_basename": "centos-7.9x64",
+        "iso_checksum_type": "sha256",
         "disk_size": "10000",
         "timeout": "30m",
         "headless": "true"
@@ -17,6 +18,7 @@
         "disk_size": "{{user `disk_size`}}",
         "iso_urls": "{{user `iso_file`}}",
         "guest_os_type": "RedHat_64",
+        "iso_checksum": "07b94e6b1a0b0260b94c83d6bb76b26bf7a310dc78d7a9c7432809fb9bc6194a",
         "http_port_min": 8336,
         "http_port_max": 8336,
         "ssh_port": 22,
@@ -25,18 +27,17 @@
         "boot_wait": "5s",
         "boot_command":  [
             "<esc> <wait>",
-            "text ks=http://{{.HTTPIP}}:{{.HTTPPort}}/7ks.cfg",
+            "linux ks=http//{{.HTTPIP}}:{{.HTTPPort}}/7ks.cfg",
             "<enter><wait>"
         ],
 
-        "shutdown_command": "echo {{user `ssh_username`}} |sudo -S /sbin/halt -h -p",
+        "shutdown_command": "echo '/sbin/halt -h -p' > /tmp/shutdown.sh; echo 'vagrant'|sudo -S sh '/tmp/shutdown.sh'",
         "ssh_username": "{{user `ssh_username`}}",
         "ssh_password": "{{user `ssh_password`}}",
         "ssh_wait_timeout": "{{user `timeout`}}",
 
         "vboxmanage": [
             ["modifyvm", "{{.Name}}", "--nat-localhostreachable1", "on"],
-            ["modifyvm", "{{.Name}}", "--memory", "4096" ],
             ["modifyvm", "{{.Name}}", "--cpus", "2" ],
             ["modifyvm", "{{.Name}}", "--usb", "off"],
             ["modifyvm", "{{.Name}}", "--audio", "none"]
