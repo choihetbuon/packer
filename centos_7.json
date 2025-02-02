@@ -26,7 +26,7 @@
         "boot_wait": "5s",
         "boot_command":  [
             "<esc> <wait>",
-            "linux ks=http//{{.HTTPIP}}:{{.HTTPPort}}/ks.cfg",
+            "linux ks=http://{{.HTTPIP}}:{{.HTTPPort}}/ks.cfg",
             "<enter><wait>"
         ],
 
@@ -49,21 +49,32 @@
 
     "provisioners": [
         {
+            "type": "file",
+            "source": "scripts/CentOS-base.repo",
+            "destination": "/tmp/CentOS-base.repo"
+        },
+        {
+            "type": "shell",
+            "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E bash '{{.Path}}'",
+            "inline": [
+                "cp /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.old",
+                "rm -f /etc/yum.repos.d/CentOS-Base.repo",
+                "mv /tmp/CentOS-base.repo /etc/yum.repos.d/CentOS-Base.repo",
+                "yum clean all",
+                "rm -rf /var/cache/yum/*",
+                "yum update -y",
+                "yum upgrade -y"
+            ]
+        },
+        {
             "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E bash '{{.Path}}'",
             "type": "shell",
             "scripts": [
-                "scripts/change_repo.sh",
                 "scripts/devtools.sh"
             ],
             "expect_disconnect": true,
             "pause_before": "30s",
             "timeout": "15m"
         }
-    ],
-    "post-processors": [{
-        "type": "vagrant",
-        "output": "./centos-7.9-x64-{{.type}}-minimal.box",
-        "compression_level": 9,
-        "keep_input_artifact": false
-    }]
+    ]
 }
