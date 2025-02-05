@@ -71,7 +71,7 @@
             "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E bash '{{.Path}}'",
             "type": "shell",
             "scripts": [
-                "scripts/devtools.sh"
+                "scripts/python3.sh"
             ],
             "expect_disconnect": true,
             "pause_before": "30s",
