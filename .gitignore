@@ -2,3 +2,6 @@ output*
 *.iso
 *cached*
 pacher_cache
+*.log
+local
+ubuntu22-04/*_cached

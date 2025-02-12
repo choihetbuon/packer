@@ -41,7 +41,7 @@
   ],
   "post-processors": [{
         "type": "vagrant",
-        "output": "./centos-7.9-x64-{{.type}}-minimal.box",
+        "output": "./centos-7.9-x64-virtualbox-iso-minimal.box",
         "vagrantfile_template": "./Vagrantfile"
     }]
 
