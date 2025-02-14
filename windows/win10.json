@@ -1,0 +1,78 @@
+{
+    "variables": {
+      "iso_url": "Win10_22H2_English_x64.iso",
+      "iso_checksum": "af8d0e9efd3ef482d0ab365766e191e420777b2b",
+      "headless": "true",
+      "devtools": "false",
+      "disk_size": "40960",
+      "disk_type_id": "thin"
+    },
+    "builders": [
+      {
+        "type": "virtualbox-iso",
+        "communicator": "winrm",
+        "disk_size": 61440,
+        "floppy_files": [
+          "./Autounattend.xml",
+          "scripts/firstboot.ps1",
+          "scripts/winrm.ps1"
+        ],
+        "guest_os_type": "Windows10_64",
+        "iso_interface": "sata",
+        "headless": "{{user `headless`}}",
+        "iso_url": "{{user `iso_url`}}",
+        "iso_checksum": "{{user `iso_checksum`}}",
+        "winrm_username": "vagrant",
+        "winrm_password": "vagrant",
+        "winrm_timeout": "3h",
+        "shutdown_command": "c:/windows/system32/sysprep/sysprep.exe /generalize /oobe /quiet shutdown /unattend:a:/unattend.xml /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
+        "post_shutdown_delay": "30s",
+        "guest_additions_mode": "attach",
+        "RAM_reserve_all": true,
+        "vboxmanage": [
+          ["modifyvm", "{{.Name}}", "--memory", "4096"],
+          ["modifyvm", "{{.Name}}", "--cpus", "4"],
+          ["modifyvm", "{{.Name}}", "--vram", "128"],
+          ["modifyvm", "{{.Name}}", "--audio", "none"]
+        ]
+      }
+    ],
+    "provisioners": [
+      {
+        "type": "powershell",
+        "scripts": [
+            "scripts/disable-windows-defender.ps1",
+            "scripts/block-telemetry.ps1",
+            "scripts/remove-onedrive.ps1",
+            "scripts/enable-rdp.ps1",
+            "scripts/pass-no-expiration.ps1",
+            "scripts/enable-uac.ps1",
+            "scripts/remove-apps.ps1",
+            "scripts/disable-hibernate.ps1",
+            "scripts/disable-autologin.ps1"
+        ],
+        "environment_vars": ["devtools={{user `devtools`}}"]
+      },
+      {
+        "type": "windows-update",
+        "search_criteria": "IsInstalled=0",
+        "filters": [
+            "exclude:$_.Title -like '*Preview*'",
+            "include:$true"
+        ]
+      },
+      {
+        "type": "windows-restart",
+        "restart_timeout": "10m"
+      }
+    ],
+    "post-processors": [
+      {
+        "compression_level": 9,
+        "type": "vagrant",
+        "keep_input_artifact": false,
+        "provider_override": "virtualbox",
+        "output": "{{.Provider}}_windows10.box"
+      }
+    ]
+  }
