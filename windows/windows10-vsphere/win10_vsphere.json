@@ -9,13 +9,12 @@
       "vsphere_folder": "Templates",
       "vsphere_dc_name": "office",
       "vsphere_host": "192.168.10.20",
-      "vsphere_portgroup_name": "vlan16",
-      "vsphere_datastore": "esxi02-datastore4",
-      "winrm_password": "vagrant",
+      "vsphere_network": "vlan16",
+      "vsphere_datastore": "datastore1",
+      "winrm_password": "vagrant",  
       "cpu_num": "8",
       "mem_size": "8192",
-      "os_iso_path": "[esxi02-datastore4] ISO/Win10_22H2_English_x64.iso",
-      "iso_checksum": "af8d0e9efd3ef482d0ab365766e191e420777b2b",
+      "os_iso_path": "[esxi02-datastore2] ISO/Win10_22H2.iso",
       "vmtools_iso_path":"[esxi02-datastore4] ISO/windows.iso"
     },
     "sensitive-variables": [
@@ -39,9 +38,8 @@
         "winrm_username": "vagrant",
         "communicator": "winrm",
         "RAM": "8192",
-        "CPUs": "4",
+        "CPUs": "8",
         "ip_wait_timeout": "3h",
-        "iso_checksum": "{{user `iso_checksum`}}",
         "floppy_files": [
           "./Autounattend.xml",
           "../scripts/vmtools.cmd",
@@ -57,11 +55,11 @@
         "shutdown_command": "c:/windows/system32/sysprep/sysprep.exe /generalize /oobe /quiet shutdown /unattend:a:/unattend.xml /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
         "network_adapters": [
         {
-          "network": "{{user `vsphere_portgroup_name`}}",
+          "network": "{{user `vsphere_network`}}",
           "network_card": "vmxnet3"
         }
         ],
-        "disk_controller_type": "sata",
+        "disk_controller_type": "lsilogic-sas",
         "storage": [
         {
           "disk_size": "{{user `disk_size`}}",
@@ -72,6 +70,10 @@
       }
     ],
     "provisioners": [
+      {
+        "type": "windows-shell",
+        "inline": ["ipconfig"]
+      },
       {
         "type": "powershell",
         "scripts": [
