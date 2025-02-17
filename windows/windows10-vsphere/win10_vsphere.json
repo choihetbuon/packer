@@ -40,11 +40,11 @@
         "RAM": "8192",
         "CPUs": "8",
         "ip_wait_timeout": "3h",
+        "shutdown_timeout": "60m",
         "floppy_files": [
           "./Autounattend.xml",
           "../scripts/vmtools.cmd",
-          "../scripts/firstboot.ps1",
-          "../scripts/winrm.ps1"
+          "../scripts/firstboot.ps1"
         ],
         "guest_os_type": "windows9_64Guest",
         "iso_paths": [
@@ -52,7 +52,7 @@
           "{{user `vmtools_iso_path`}}"
         ],
         "winrm_timeout": "3h",
-        "shutdown_command": "c:/windows/system32/sysprep/sysprep.exe /generalize /oobe /quiet shutdown /unattend:a:/unattend.xml /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
+        "shutdown_command": "c:/windows/system32/sysprep/sysprep.exe /generalize /oobe /quiet /shutdown /unattend:a:/unattend.xml",
         "network_adapters": [
         {
           "network": "{{user `vsphere_network`}}",
@@ -95,19 +95,17 @@
             "exclude:$_.Title -like '*Preview*'",
             "include:$true"
         ]
-      },
-      {
-        "type": "windows-restart",
-        "restart_timeout": "10m"
       }
     ],
     "post-processors": [
       {
-        "compression_level": 9,
-        "type": "vagrant",
-        "keep_input_artifact": false,
-        "provider_override": "virtualbox",
-        "output": "{{.Provider}}_windows10.box"
+        "type": "vsphere-template",
+        "host": "{{user `vsphere_host`}}",
+        "insecure": true,
+        "username": "{{user `vsphere_user`}}",
+        "password": "{{user `vsphere_password`}}",
+        "datacenter": "{{user `vsphere_dc_name`}}",
+        "folder": "{{user `vsphere_folder`}}"
       }
     ]
   }

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<unattend xmlns="urn:schemas-microsoft-com:unattend" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <settings pass="generalize">
+        <component name="Microsoft-Windows-Security-SPP" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
+            <SkipRearm>1</SkipRearm>
+        </component>
+        <component name="Microsoft-Windows-PnpSysprep" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
+            <PersistAllDeviceInstalls>false</PersistAllDeviceInstalls>
+            <DoNotCleanUpNonPresentDevices>false</DoNotCleanUpNonPresentDevices>
+        </component>
+    </settings>
+    <settings pass="oobeSystem">
+        <component name="Microsoft-Windows-International-Core" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
+            <InputLocale>en-US</InputLocale>
+            <SystemLocale>en-US</SystemLocale>
+            <UILanguage>en-US</UILanguage>
+            <UserLocale>en-US</UserLocale>
+        </component>
+        <component name="Microsoft-Windows-Shell-Setup" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
+            <OOBE>
+                <HideEULAPage>true</HideEULAPage>
+                <HideLocalAccountScreen>true</HideLocalAccountScreen>
+                <HideOEMRegistrationScreen>true</HideOEMRegistrationScreen>
+                <HideOnlineAccountScreens>true</HideOnlineAccountScreens>
+                <HideWirelessSetupInOOBE>true</HideWirelessSetupInOOBE>
+                <NetworkLocation>Work</NetworkLocation>
+                <ProtectYourPC>3</ProtectYourPC>
+                <SkipMachineOOBE>true</SkipMachineOOBE>
+                <SkipUserOOBE>true</SkipUserOOBE>
+                <VMModeOptimizations>
+                    <SkipAdministratorProfileRemoval>true</SkipAdministratorProfileRemoval>
+                    <SkipNotifyUILanguageChange>true</SkipNotifyUILanguageChange>
+                    <SkipWinREInitialization>true</SkipWinREInitialization>
+                </VMModeOptimizations>
+            </OOBE>
+            <TimeZone>UTC</TimeZone>
+            <UserAccounts>
+                <AdministratorPassword>
+                    <Value>admin</Value>
+                    <PlainText>true</PlainText>
+                </AdministratorPassword>
+                <LocalAccounts>
+                    <LocalAccount wcm:action="add">
+                        <Password>
+                            <Value>admin</Value>
+                            <PlainText>true</PlainText>
+                        </Password>
+                        <Description>admin User</Description>
+                        <DisplayName>admin</DisplayName>
+                        <Group>administrators</Group>
+                        <Name>admin</Name>
+                    </LocalAccount>
+                </LocalAccounts>
+            </UserAccounts>
+</unattend>

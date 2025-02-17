@@ -178,7 +178,7 @@
             <FirstLogonCommands>
                 <SynchronousCommand wcm:action="add">
                     <Order>1</Order>
-                    <CommandLine>%windir%\System32\cmd.exe /c wmic a:\vmtools.cmd</CommandLine>
+                    <CommandLine>%windir%\System32\cmd.exe /c a:\vmtools.cmd</CommandLine>
                     <Description>Install vmtools</Description>
                 </SynchronousCommand>
                 <SynchronousCommand wcm:action="add">
@@ -268,7 +268,7 @@
                 </SynchronousCommand>
                 <SynchronousCommand wcm:action="add">
                     <Order>19</Order>
-                    <CommandLine>%windir%\System32\cmd.exe /c wmic a:\firstboot.ps1</CommandLine>
+                    <CommandLine>%windir%\System32\WindowsPowerShell\v1.0\powershell.exe -File a:\firstboot.ps1</CommandLine>
                     <Description>Run scripts firstboot</Description>
                 </SynchronousCommand>
             </FirstLogonCommands>

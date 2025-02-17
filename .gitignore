@@ -5,3 +5,4 @@ pacher_cache
 *.log
 local
 ubuntu22-04/*_cached
+*.box
