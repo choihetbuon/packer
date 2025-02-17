@@ -11,5 +11,5 @@ Set-NetworkToPrivate
 Start-Job -ScriptBlock { C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -NoLogo -ExecutionPolicy Bypass -File a:\winrm.ps1 }
 
 # Install all available Windows updates
-Install-Module WindowsBox.WindowsUpdates -Force
-Install-WindowsUpdates
+#Install-Module WindowsBox.WindowsUpdates -Force
+#Install-WindowsUpdates
