@@ -31,7 +31,7 @@
         "datastore": "{{user `vsphere_datastore`}}",
         "folder": "{{user `vsphere_folder`}}",
         "insecure_connection": "true",
-        "convert_to_template": true,
+        "convert_to_template": "true",
         "RAM_reserve_all": true, 
         "vm_name": "{{user `vsphere_template_name`}}",
         "winrm_password": "{{user `winrm_password`}}",
@@ -44,7 +44,7 @@
         "floppy_files": [
           "./Autounattend.xml",
           "../scripts/vmtools.cmd",
-          "../scripts/firstboot.ps1"
+          "./unattend.xml"
         ],
         "guest_os_type": "windows9_64Guest",
         "iso_paths": [
@@ -52,7 +52,7 @@
           "{{user `vmtools_iso_path`}}"
         ],
         "winrm_timeout": "3h",
-        "shutdown_command": "c:/windows/system32/sysprep/sysprep.exe /generalize /oobe /quiet /shutdown /unattend:a:/unattend.xml",
+        "shutdown_command": "c:/windows/system32/sysprep/sysprep.exe /generalize /oobe /quiet /shutdown /unattend:a:/unattend.xml && shutdown /s /t 0 /f",
         "network_adapters": [
         {
           "network": "{{user `vsphere_network`}}",
@@ -79,9 +79,8 @@
         "scripts": [
             "../scripts/disable-windows-defender.ps1",
             "../scripts/block-telemetry.ps1",
-            "../scripts/remove-onedrive.ps1",
+            "../scripts/remove-one-drive.ps1",
             "../scripts/enable-rdp.ps1",
-            "../scripts/pass-no-expiration.ps1",
             "../scripts/enable-uac.ps1",
             "../scripts/remove-apps.ps1",
             "../scripts/disable-hibernate.ps1",
@@ -95,17 +94,10 @@
             "exclude:$_.Title -like '*Preview*'",
             "include:$true"
         ]
-      }
-    ],
-    "post-processors": [
+      },
       {
-        "type": "vsphere-template",
-        "host": "{{user `vsphere_host`}}",
-        "insecure": true,
-        "username": "{{user `vsphere_user`}}",
-        "password": "{{user `vsphere_password`}}",
-        "datacenter": "{{user `vsphere_dc_name`}}",
-        "folder": "{{user `vsphere_folder`}}"
+        "type": "windows-restart",
+        "restart_timeout": "10m"
       }
     ]
   }

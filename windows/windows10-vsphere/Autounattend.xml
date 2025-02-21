@@ -266,11 +266,13 @@
                     <CommandLine>%windir%\System32\cmd.exe /c wmic useraccount where "name='vagrant'" set PasswordExpires=FALSE</CommandLine>
                     <Description>Disable password expiration for vagrant user</Description>
                 </SynchronousCommand>
+                <!--
                 <SynchronousCommand wcm:action="add">
                     <Order>19</Order>
                     <CommandLine>%windir%\System32\WindowsPowerShell\v1.0\powershell.exe -File a:\firstboot.ps1</CommandLine>
                     <Description>Run scripts firstboot</Description>
                 </SynchronousCommand>
+                -->
             </FirstLogonCommands>
         </component>
         <component name="Microsoft-Windows-WinRE-RecoveryAgent" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
