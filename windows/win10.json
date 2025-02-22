@@ -14,8 +14,7 @@
         "disk_size": 61440,
         "floppy_files": [
           "./Autounattend.xml",
-          "scripts/firstboot.ps1",
-          "scripts/winrm.ps1"
+          "./unattend.xml"
         ],
         "guest_os_type": "Windows10_64",
         "iso_interface": "sata",
